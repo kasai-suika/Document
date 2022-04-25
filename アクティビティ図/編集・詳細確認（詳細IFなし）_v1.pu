@@ -1,0 +1,59 @@
+@startuml 編集/詳細確認（詳細IFなし）
+
+title 編集/詳細確認（詳細IFなし）
+
+| 使用者 |
+    split
+    :「編集」ボタン押下;
+    split again
+    :リスト押下;
+    end split
+|#AntiqueWhite| アプリ |
+    :DBからデータ取得;
+    split
+    :編集画面を表示;
+    split again
+    :詳細画面を表示;
+    end split
+| 使用者 |
+split
+:編集;
+if () then (詳細画面)
+            :「編集」ボタン押下;
+        else (編集画面);
+        endif
+
+        :データ入力;
+        :「更新」ボタン押下;
+        |#AntiqueWhite| アプリ |
+            :DBにデータ保存;
+
+| 使用者 |
+    if () then (編集)
+        if () then (詳細画面)
+            :「編集」ボタン押下;
+        else (編集画面);
+        endif
+
+        :データ入力;
+        :「更新」ボタン押下;
+        |#AntiqueWhite| アプリ |
+            :DBにデータ保存;
+    | 使用者 |
+    else (削除)
+        :「削除」ボタン押下;
+        |#AntiqueWhite| アプリ |
+            :削除ダイアログ表示;
+        | 使用者 |
+            if () then (Yes押下)
+                |#AntiqueWhite| アプリ |
+                    :DBからデータ削除;
+            else (No押下)
+            endif      
+    endif
+
+|#AntiqueWhite| アプリ |
+    :ホーム画面表示;
+stop
+
+@enduml
