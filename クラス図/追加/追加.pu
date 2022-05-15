@@ -1,0 +1,33 @@
+@startuml
+
+class 追加リポジトリ
+note top of 追加リポジトリ : タスク追加する際に必要なIFを実装している
+追加リポジトリ : getデータ()
+追加リポジトリ : setデータ()
+
+interface インターフェース
+インターフェース : getデータ()
+インターフェース : setデータ()
+
+class 追加UseCase
+note top of 追加UseCase : コンストラクタでIFの型の引数を貰い実装に使用する。\nリポジトリの型は使用しないので依存していない。
+追加UseCase : 入力内容確認()
+追加UseCase : DBへ追加()
+
+class 追加ViewModel
+note top of 追加ViewModel : 「追加UseCase」「追加リポジトリ」をNEWし、\n「追加UseCase」の引数に「追加リポジトリ」を渡す。\nUIで入力された値+追加UseCaseの関数を使用して追加処理を行う。
+
+class Activity
+note top of Activity : アプリ都合上の動作（数値の許容範囲決定など）はここで実装
+
+class 入力Fragment
+note top of 入力Fragment : 追加/編集でFragmentを分けていたが「入力」で統一化できそう
+
+追加リポジトリ <|.. インターフェース
+追加ViewModel *-- 追加リポジトリ
+追加ViewModel *-- 追加UseCase
+追加リポジトリ -left- 追加UseCase
+Activity o-- 入力Fragment
+入力Fragment o-- 追加ViewModel
+
+@enduml
