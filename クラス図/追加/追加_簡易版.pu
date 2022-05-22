@@ -23,10 +23,10 @@ note top of Activity : アプリ都合上の動作（数値の許容範囲決定
 class 入力Fragment
 note top of 入力Fragment : 追加/編集でFragmentを分けていたが「入力」で統一化できそう
 
-追加リポジトリ <|.. インターフェース
-追加ViewModel *-- 追加リポジトリ
+インターフェース <|.. 追加リポジトリ
+追加ViewModel *-- インターフェース
 追加ViewModel *-- 追加UseCase
-追加リポジトリ -left- 追加UseCase
+インターフェース -left- 追加UseCase
 Activity o-- 入力Fragment
 入力Fragment o-- 追加ViewModel
 
