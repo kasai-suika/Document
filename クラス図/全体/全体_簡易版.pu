@@ -1,0 +1,98 @@
+@startuml
+
+class MainActivity{
+    + sharedPreferences : SharedPreferences 
+    + RESULT_PICK_IMAGEFILE : int
+}
+note left of MainActivity : ソート等のクラスを一旦省いた簡易版
+
+class LogDetailFragment{
+    + newInstanc() : Fragment
+}
+
+class LogAddFragment{
+    + newInstanc() : Fragment
+}
+
+class LogEditFragment{
+    + newInstanc() : Fragment
+}
+
+class MainViewModel{
+    + getXXX() : LiveData<String>
+    + setXXX(xxx : String)
+    + getDivingLog() : DivingLog
+}
+
+class DetailViewModel{
+    + clickEditButton()
+    + clickDeleteButton()
+    + clickCancelButton()
+}
+
+class InputViewModel{
+    + clickWeatherInfoButton()
+    + clickAddButton()
+    + clickCancelButton()
+}
+
+class Detailリポジトリ{
+    + getDivingLogData() : DivingLog
+    + deleteDivingLogData(divingLog : DivingLog)
+}
+
+class Inputリポジトリ{
+    + getDivingLogData() : DivingLog
+    + setDivingLogData(divingLog : DivingLog)
+    + updateDivingLogData(divingLog : DivingLog)
+}
+
+interface インターフェース{
+    + getDivingLogData() : DivingLog
+    + setNewDivingLogData(divingLog : DivingLog)
+    + updateDivingLogData(divingLog : DivingLog)
+    + deleteDivingLogData(divingLog : DivingLog)
+}
+
+class DetailUseCase{
+    + checkData(divingLog : DivingLog)
+    + setDataToLayout(divingLog : DivingLog)
+    + delete(divingLog : DivingLog)
+    + cancel()
+}
+
+class InputUseCase{
+    + checkData(divingLog : DivingLog)
+    + addData(divingLog : DivingLog)
+    + updateData(divingLog : DivingLog)
+    + getWeatherInfo() : weather : String, temp : String
+    + cancel()
+}
+
+インターフェース <|.. Detailリポジトリ
+インターフェース <|.. Inputリポジトリ
+
+DetailViewModel *-- インターフェース
+InputViewModel *-- インターフェース
+
+DetailViewModel *-- DetailUseCase
+InputViewModel *-- InputUseCase
+
+インターフェース -left- DetailUseCase
+インターフェース -right- InputUseCase
+
+MainActivity o-- LogDetailFragment
+MainActivity o-- LogAddFragment
+MainActivity o-- LogEditFragment
+
+LogDetailFragment o-- DetailViewModel
+LogAddFragment o-- InputViewModel
+LogEditFragment o-- InputViewModel
+
+MainViewModel <|-le- DetailViewModel
+MainViewModel <|-ri- InputViewModel
+
+Detailリポジトリ *-down- DivingLog
+Inputリポジトリ *-down- DivingLog
+
+@enduml

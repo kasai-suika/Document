@@ -1,0 +1,58 @@
+@startuml
+
+class MainActivity{
+    + sharedPreferences : SharedPreferences 
+    + RESULT_PICK_IMAGEFILE : int
+}
+note top of MainActivity : アプリ都合上の動作（数値の許容範囲決定など）はここで実装
+
+class LogDetailFragment{
+    + newInstanc() : Fragment
+}
+
+class MainViewModel{
+    + getXXX() : LiveData<String>
+    + setXXX(xxx : String)
+    + getDivingLog() : DivingLog
+}
+note top of MainViewModel : layoutで入力する値のset/get.\n多いので省略.
+
+class DetailViewModel{
+    + clickEditButton()
+    + clickDeleteButton()
+    + clickCancelButton()
+}
+note top of DetailViewModel : 「DetailUseCase」「Detailリポジトリ」をNEWし、\n「DetailUseCase」の引数に「Detailリポジトリ」を渡す.\nUIで入力された値+DetailUseCaseの関数を使用して追加処理を行う.
+
+class Detailリポジトリ{
+    + getDivingLogData() : DivingLog
+    + deleteDivingLogData(divingLog : DivingLog)
+}
+note top of Detailリポジトリ : タスク追加する際に必要なIFを実装している
+
+interface インターフェース{
+    + getDivingLogData() : DivingLog
+    + setNewDivingLogData(divingLog : DivingLog)
+    + updateDivingLogData(divingLog : DivingLog)
+    + deleteDivingLogData(divingLog : DivingLog)
+}
+
+class DetailUseCase{
+    + checkData(divingLog : DivingLog)
+    + setDataToLayout(divingLog : DivingLog)
+    + delete(divingLog : DivingLog)
+    + cancel()
+}
+note top of DetailUseCase : コンストラクタでIFの型の引数を貰い実装に使用する.\nリポジトリの型は使用しないので依存していない.
+note left of DivingLog : DivingLogとして保存する変数のset/get.\n多いので省略.
+
+インターフェース <|.. Detailリポジトリ
+DetailViewModel *-- インターフェース
+DetailViewModel *-- DetailUseCase
+インターフェース -left- DetailUseCase
+MainActivity o-- LogDetailFragment
+LogDetailFragment o-- DetailViewModel
+MainViewModel <|-- DetailViewModel
+Detailリポジトリ *-le- DivingLog
+
+@enduml
