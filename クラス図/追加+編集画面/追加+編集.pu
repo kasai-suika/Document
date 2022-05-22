@@ -1,0 +1,62 @@
+@startuml
+
+class MainActivity{
+    + sharedPreferences : SharedPreferences 
+    + RESULT_PICK_IMAGEFILE : int
+}
+note top of MainActivity : アプリ都合上の動作（数値の許容範囲決定など）はここで実装
+
+class LogAddFragment{
+    + newInstanc() : Fragment
+}
+note left of LogAddFragment : 編集時はここがLogEditFragmentになる.
+
+class MainViewModel{
+    + getXXX() : LiveData<String>
+    + setXXX(xxx : String)
+    + getDivingLog() : DivingLog
+}
+note top of MainViewModel : layoutで入力する値のset/get.\n多いので省略.
+
+class InputViewModel{
+    + clickWeatherInfoButton()
+    + clickAddButton()
+    + clickCancelButton()
+}
+note top of InputViewModel : 「InputUseCase」「Inputリポジトリ」をNEWし、\n「InputUseCase」の引数に「Inputリポジトリ」を渡す.\nUIで入力された値+InputUseCaseの関数を使用して追加処理を行う.
+
+class Inputリポジトリ{
+    + getDivingLogData() : DivingLog
+    + setDivingLogData(divingLog : DivingLog)
+    + updateDivingLogData(divingLog : DivingLog)
+}
+note top of Inputリポジトリ : タスク追加する際に必要なIFを実装している
+
+interface インターフェース{
+    + getDivingLogData() : DivingLog
+    + setNewDivingLogData(divingLog : DivingLog)
+    + updateDivingLogData(divingLog : DivingLog)
+    + deleteDivingLogData(divingLog : DivingLog)
+}
+
+class InputUseCase{
+    + checkData(divingLog : DivingLog)
+    + addData(divingLog : DivingLog)
+    + updateData(divingLog : DivingLog)
+    + getWeatherInfo() : weather : String, temp : String
+    + cancel()
+}
+note top of InputUseCase : コンストラクタでIFの型の引数を貰い実装に使用する.\nリポジトリの型は使用しないので依存していない.\n追加と編集の差分はaddDataかupdateDataのみなので同じクラスにしている.\n長くなる場合はInputeUseCaseを継承したAddUseCase, EditUseCaseを作ることも検討.
+
+note left of DivingLog : DivingLogとして保存する変数のset/get.\n多いので省略.
+
+インターフェース <|.. Inputリポジトリ
+InputViewModel *-- インターフェース
+InputViewModel *-- InputUseCase
+インターフェース -left- InputUseCase
+MainActivity o-- LogAddFragment
+LogAddFragment o-- InputViewModel
+MainViewModel <|-- InputViewModel
+Inputリポジトリ *-le- DivingLog
+
+@enduml
